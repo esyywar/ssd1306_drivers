@@ -29,10 +29,10 @@
 *******************************************************/
 
 /* Handle for SPI communication peripheral */
-extern SPI_HandleTypeDef Spi2_oledWrite;
+extern SPI_HandleTypeDef Spi_ssd1306Write;
 
 /* This variable should be defined in main */
-extern SSD1306_t SSD1306_OledDisp;
+extern SSD1306_t SSD1306_Disp;
 
 /* SSD1306 data buffer */
 static uint8_t SSD1306_Buffer[SSD1306_WIDTH * SSD1306_HEIGHT / 8];
@@ -93,7 +93,7 @@ void SSD1306_DrawBitmap(int16_t x, int16_t y, const unsigned char *bitmap, int16
 uint8_t SSD1306_Init(void)
 {
 	/* Check that SPI peripheral is ready */
-	if (HAL_SPI_GetState(&Spi2_oledWrite) != HAL_SPI_STATE_READY)
+	if (HAL_SPI_GetState(&Spi_ssd1306Write) != HAL_SPI_STATE_READY)
 	{
 		return SSD1306_FAILED;
 	}
@@ -158,15 +158,15 @@ uint8_t SSD1306_Init(void)
 	SSD1306_SPI_WRITE_CMD(SSD1306_CMD_DISP_ON);
 
 	/* Initialize structure values */
-	SSD1306_OledDisp.CurrentX = 0;
-	SSD1306_OledDisp.CurrentY = 0;
+	SSD1306_Disp.CurrentX = 0;
+	SSD1306_Disp.CurrentY = 0;
 
 	/* Initialized OK */
-	SSD1306_OledDisp.Initialized = 1;
-	SSD1306_OledDisp.state = SSD1306_STATE_READY;
+	SSD1306_Disp.Initialized = 1;
+	SSD1306_Disp.state = SSD1306_STATE_READY;
 
 	/* Hang until screen has been updated */
-	while (SSD1306_OledDisp.state != SSD1306_STATE_READY)
+	while (SSD1306_Disp.state != SSD1306_STATE_READY)
 		;
 
 	/* Return OK */
@@ -179,7 +179,7 @@ uint8_t SSD1306_Init(void)
 uint8_t SSD1306_DeInit(void)
 {
 	/* Check that display is in initialized state */
-	if (!SSD1306_OledDisp.Initialized)
+	if (!SSD1306_Disp.Initialized)
 	{
 		return SSD1306_FAILED;
 	}
@@ -200,7 +200,7 @@ uint8_t SSD1306_DeInit(void)
 	SSD1306_LOGIC_POWER_DI();
 
 	/* Set structure values */
-	SSD1306_OledDisp.Initialized = 0;
+	SSD1306_Disp.Initialized = 0;
 
 	return SSD1306_OK;
 }
@@ -220,7 +220,7 @@ void SSD1306_Reset(void)
  */
 void SSD1306_Switch(void)
 {
-	if (SSD1306_OledDisp.Initialized)
+	if (SSD1306_Disp.Initialized)
 	{
 		SSD1306_DeInit();
 	}
@@ -250,7 +250,7 @@ void SSD1306_ToggleInvert(void)
 	uint16_t i;
 
 	/* Toggle invert */
-	SSD1306_OledDisp.Inverted = !SSD1306_OledDisp.Inverted;
+	SSD1306_Disp.Inverted = !SSD1306_Disp.Inverted;
 
 	/* Do memory toggle */
 	for (i = 0; i < sizeof(SSD1306_Buffer); i++)
@@ -312,7 +312,7 @@ void SSD1306_DrawPixel(uint16_t x, uint16_t y, uint8_t colour)
 	}
 
 	/* Check if pixels are inverted */
-	if (SSD1306_OledDisp.Inverted)
+	if (SSD1306_Disp.Inverted)
 	{
 		colour = !colour;
 	}
@@ -336,8 +336,8 @@ void SSD1306_DrawPixel(uint16_t x, uint16_t y, uint8_t colour)
 void SSD1306_GotoXY(uint16_t x, uint16_t y)
 {
 	/* Set write pointers */
-	SSD1306_OledDisp.CurrentX = x;
-	SSD1306_OledDisp.CurrentY = y;
+	SSD1306_Disp.CurrentX = x;
+	SSD1306_Disp.CurrentY = y;
 }
 
 /**
@@ -354,8 +354,8 @@ char SSD1306_Putc(char ch, FontDef_t *Font, uint8_t colour)
 
 	/* Check available space in LCD */
 	if (
-		SSD1306_WIDTH <= (SSD1306_OledDisp.CurrentX + Font->FontWidth) ||
-		SSD1306_HEIGHT <= (SSD1306_OledDisp.CurrentY + Font->FontHeight))
+		SSD1306_WIDTH <= (SSD1306_Disp.CurrentX + Font->FontWidth) ||
+		SSD1306_HEIGHT <= (SSD1306_Disp.CurrentY + Font->FontHeight))
 	{
 		/* Error */
 		return 0;
@@ -369,17 +369,17 @@ char SSD1306_Putc(char ch, FontDef_t *Font, uint8_t colour)
 		{
 			if ((b << j) & 0x8000)
 			{
-				SSD1306_DrawPixel(SSD1306_OledDisp.CurrentX + j, (SSD1306_OledDisp.CurrentY + i), colour);
+				SSD1306_DrawPixel(SSD1306_Disp.CurrentX + j, (SSD1306_Disp.CurrentY + i), colour);
 			}
 			else
 			{
-				SSD1306_DrawPixel(SSD1306_OledDisp.CurrentX + j, (SSD1306_OledDisp.CurrentY + i), !colour);
+				SSD1306_DrawPixel(SSD1306_Disp.CurrentX + j, (SSD1306_Disp.CurrentY + i), !colour);
 			}
 		}
 	}
 
 	/* Increase pointer */
-	SSD1306_OledDisp.CurrentX += Font->FontWidth;
+	SSD1306_Disp.CurrentX += Font->FontWidth;
 
 	/* Return character written */
 	return ch;
@@ -790,7 +790,7 @@ void SSD1306_Clear(void)
 void ssd1306_SPI_WriteCmd(uint8_t command)
 {
 	SSD1306_CMD_ACCESS();
-	HAL_SPI_Transmit(&Spi2_oledWrite, &command, 1, SSD1306_SPI_TIMEOUT);
+	HAL_SPI_Transmit(&Spi_ssd1306Write, &command, 1, SSD1306_SPI_TIMEOUT);
 }
 
 /**
@@ -799,18 +799,18 @@ void ssd1306_SPI_WriteCmd(uint8_t command)
  */
 uint8_t ssd1306_SPI_WriteDisp(uint8_t *pTxBuffer)
 {
-	uint8_t state = SSD1306_OledDisp.state;
+	uint8_t state = SSD1306_Disp.state;
 
 	if (state == SSD1306_STATE_READY)
 	{
 		/* Set state to busy */
-		SSD1306_OledDisp.state = SSD1306_STATE_BUSY;
+		SSD1306_Disp.state = SSD1306_STATE_BUSY;
 
 		/* Set D/C high for data buffer access */
 		SSD1306_DISP_ACCESS();
 
 		/* DMA enabled send with SPI - callback function run when complete */
-		while (HAL_SPI_Transmit_DMA(&Spi2_oledWrite, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK);
+		while (HAL_SPI_Transmit_DMA(&Spi_ssd1306Write, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK);
 	}
 
 	return state;
