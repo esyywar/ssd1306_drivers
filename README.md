@@ -55,6 +55,8 @@ void SPI2_IRQHandler(void)
 ```
 
 2. The handle to the SPI peripheral and SSD1306 data buffer must be initialized in main.c
+
+In main.c
 ```
 #include "ssd1306.h"
 
@@ -63,12 +65,14 @@ SSD1306_t SSD1306_Disp;
 SPI_HandleTypeDef Spi_ssd1306Write;
 ```
 
-The handle and buffer are external variables in driver src file ssd1306.c so names must match
+The handle and buffer declared in main.c are used as extern in ssd1306.c and so the names must match
+
+In ssd1306.c
 ```
-/* Handle for SPI communication peripheral */
+/* Handle for SPI communication peripheral (declared in main) */
 extern SPI_HandleTypeDef Spi_ssd1306Write;
 
-/* This variable should be defined in main */
+/* Data buffer variable (declared in main) */
 extern SSD1306_t SSD1306_Disp;
 ```
 
