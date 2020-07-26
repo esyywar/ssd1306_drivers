@@ -4,6 +4,8 @@ This repository has code for SSD1306 display drivers for STM32. The driver uses 
 
 The drivers will work for any SSD1306 based LCD or OLED display.
 
+Note that these functions use the stm32 HAL. The HAL drivers for GPIO, SPI and DMA must be included in your project. 
+
 # Tested Hardware
 
 |     STM32      |        Display      |   Tested    |
@@ -53,6 +55,8 @@ void SPI2_IRQHandler(void)
 ```
 
 2. The handle to the SPI peripheral and SSD1306 data buffer must be initialized in main.c
+
+In main.c
 ```
 #include "ssd1306.h"
 
@@ -61,12 +65,14 @@ SSD1306_t SSD1306_Disp;
 SPI_HandleTypeDef Spi_ssd1306Write;
 ```
 
-The handle and buffer are external variables in driver src file ssd1306.c so names must match
+The handle and buffer declared in main.c are used as extern in ssd1306.c and so the names must match
+
+In ssd1306.c
 ```
-/* Handle for SPI communication peripheral */
+/* Handle for SPI communication peripheral (declared in main) */
 extern SPI_HandleTypeDef Spi_ssd1306Write;
 
-/* This variable should be defined in main */
+/* Data buffer variable (declared in main) */
 extern SSD1306_t SSD1306_Disp;
 ```
 
