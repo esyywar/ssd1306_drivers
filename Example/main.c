@@ -21,8 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "ssd1306.h"
-
 /* Private variables ---------------------------------------------------------*/
 DMA_HandleTypeDef hdma_spi2_tx;
 UART_HandleTypeDef huart2;
@@ -30,6 +28,7 @@ UART_HandleTypeDef huart2;
 /*********************************************************
 ********** Private variables for SSD1306
 *********************************************************/
+#include "ssd1306.h"
 
 SPI_HandleTypeDef Spi_ssd1306Write;
 

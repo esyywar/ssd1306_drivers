@@ -38,7 +38,7 @@ extern C
  *
  * It also allows you to draw texts and characters using appropriate functions provided in library.
  *
- * Example pinout:
+ * Example pinout for Digilent PMOS OLED 128x32:
  *
  * SSD1306    |STM32        |DESCRIPTION
  *

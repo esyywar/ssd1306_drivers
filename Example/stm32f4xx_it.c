@@ -32,7 +32,7 @@ extern SPI_HandleTypeDef Spi_ssd1306Write;
 /* USER CODE END EV */
 
 /******************************************************************************/
-/*           Cortex-M4 Processor Interruption and Exception Handlers          */ 
+/*           Cortex-M4 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
   * @brief This function handles Non maskable interrupt.
@@ -172,13 +172,7 @@ void SysTick_Handler(void)
   */
 void DMA1_Stream4_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA1_Stream4_IRQn 0 */
-
-  /* USER CODE END DMA1_Stream4_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi2_tx);
-  /* USER CODE BEGIN DMA1_Stream4_IRQn 1 */
-
-  /* USER CODE END DMA1_Stream4_IRQn 1 */
 }
 
 /**
@@ -186,13 +180,7 @@ void DMA1_Stream4_IRQHandler(void)
   */
 void SPI2_IRQHandler(void)
 {
-  /* USER CODE BEGIN SPI2_IRQn 0 */
-
-  /* USER CODE END SPI2_IRQn 0 */
   HAL_SPI_IRQHandler(&Spi_ssd1306Write);
-  /* USER CODE BEGIN SPI2_IRQn 1 */
-
-  /* USER CODE END SPI2_IRQn 1 */
 }
 
 /**
@@ -200,15 +188,16 @@ void SPI2_IRQHandler(void)
   */
 void EXTI15_10_IRQHandler(void)
 {
-	/* Prevent button debouncing */
-	HAL_Delay(200);
-	
-	/* If PC13 then toggle OLED power */
-	if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_13)){
-		SSD1306_Switch();
-	} 
+  /* Prevent button debouncing */
+  HAL_Delay(200);
 
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+  /* If PC13 then toggle OLED power */
+  if (__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_13))
+  {
+    SSD1306_Switch();
+  }
+
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
 }
 
 /* USER CODE BEGIN 1 */
