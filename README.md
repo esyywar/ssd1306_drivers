@@ -4,6 +4,8 @@ This repository has code for SSD1306 display drivers for STM32. The driver uses 
 
 The drivers will work for any SSD1306 based LCD or OLED display.
 
+Note that these functions use the stm32 HAL. The HAL drivers for GPIO, SPI and DMA must be inclued in your project. 
+
 # Tested Hardware
 
 |     STM32      |        Display      |   Tested    |
