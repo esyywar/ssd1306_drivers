@@ -28,10 +28,10 @@
 ********** Private variables
 *******************************************************/
 
-/* Handle for SPI communication peripheral */
+/* Handle for SPI communication peripheral (declared in main) */
 extern SPI_HandleTypeDef Spi_ssd1306Write;
 
-/* This variable should be defined in main */
+/* Data buffer variable (declared in main) */
 extern SSD1306_t SSD1306_Disp;
 
 /* SSD1306 data buffer */
@@ -810,7 +810,8 @@ uint8_t ssd1306_SPI_WriteDisp(uint8_t *pTxBuffer)
 		SSD1306_DISP_ACCESS();
 
 		/* DMA enabled send with SPI - callback function run when complete */
-		while (HAL_SPI_Transmit_DMA(&Spi_ssd1306Write, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK);
+		while (HAL_SPI_Transmit_DMA(&Spi_ssd1306Write, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK)
+			;
 	}
 
 	return state;
