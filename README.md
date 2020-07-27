@@ -13,12 +13,11 @@ Note that these functions use the stm32 HAL. The HAL drivers for GPIO, SPI and D
 |   STM32F446RE   | [Digilent PMOS OLED](https://store.digilentinc.com/pmod-oled-128-x-32-pixel-monochromatic-oled-display/) |  :heavy_check_mark:  |
 |   STM32F446RE   | [Monochrome 128x32 SPI OLED graphic display](https://www.adafruit.com/product/661) |       :heavy_check_mark:      |
 
-#
-
 # Set-Up
 
-To use these drivers you must set-up DMA enabled SPI, declare couple private variables and implement the SPI complete callback. 
-You can see this set-up implemented in the example code. For more detail, read on...
+Download the [Inc](./Inc) and [Src](./Src) folder contents. Include these files in your project's path. You can follow these next steps to use the drivers:
+
+Note: You can view and test the simple program in [Example](./Example) where these steps are already implemented. The main program prints 'Hello World' across the screen.
 
 ### SPI with DMA
 
@@ -97,3 +96,7 @@ if (SSD1306_Disp.state == SSD1306_STATE_READY) {
 ```
 
 Similarly, when using an RTOS, semaphore or mutex can protect the data buffer.
+
+# How it Works
+
+These drivers offer the improvement of non-blocking functionality over [previously available drivers](https://github.com/afiskon/stm32-ssd1306). This is accomplished firstly by using the SSD1306's [horizontal addressing mode rather than the page addressing mode](https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf). In this mode, the data is written to the SSD1306 to fill the entire screen without need for interruption. Moreover, using interrupts and DMA peripheral means the processor needs only to start data transfer and is then free for other work.
