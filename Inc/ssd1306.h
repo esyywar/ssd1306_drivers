@@ -38,7 +38,7 @@ extern C
  *
  * It also allows you to draw texts and characters using appropriate functions provided in library.
  *
- * Example pinout for Digilent PMOS OLED 128x32:
+ * Example pinout:
  *
  * SSD1306    |STM32        |DESCRIPTION
  *
@@ -216,6 +216,7 @@ extern C
 /* State macros - set when data from buffer is being loaded */
 #define SSD1306_STATE_READY 0
 #define SSD1306_STATE_BUSY 1
+#define SSD1306_SPI_ERROR 2
 
   /**********************************************************
 ********** SSD1306 Driver Functions API - Display Ctrl
@@ -248,7 +249,7 @@ extern C
  * @brief  Updates buffer from internal RAM to OLED
  * @note   This function must be called each time you do some changes to OLED, to update buffer from RAM to OLED
  */
-  void SSD1306_UpdateScreen(void);
+  uint8_t SSD1306_UpdateScreen(void);
 
   /** 
  * @brief  Clears the screen

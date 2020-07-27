@@ -24,15 +24,19 @@
  */
 #include "ssd1306.h"
 
-/*******************************************************
-********** Private variables
-*******************************************************/
+/*********************************************************************
+******** Extern variables (must be defined in your main program!)
+*********************************************************************/
 
-/* Handle for SPI communication peripheral (declared in main) */
+/* Handle for SPI communication peripheral */
 extern SPI_HandleTypeDef Spi_ssd1306Write;
 
-/* Data buffer variable (declared in main) */
+/* This variable should be defined in main */
 extern SSD1306_t SSD1306_Disp;
+
+/******************************************************
+*** Size of SSD1306 buffer defined from ssd1306.h
+******************************************************/
 
 /* SSD1306 data buffer */
 static uint8_t SSD1306_Buffer[SSD1306_WIDTH * SSD1306_HEIGHT / 8];
@@ -234,11 +238,10 @@ void SSD1306_Switch(void)
  * @brief  Updates buffer from internal RAM to OLED with SSD1306 in horizontal addressing mode (blocks until interrupt function initialized)
  * @note   This function must be called each time you do some changes to OLED, to update buffer from RAM to OLED
  */
-void SSD1306_UpdateScreen(void)
+uint8_t SSD1306_UpdateScreen(void)
 {
 	/* Writing data to display buffer - non-blocking function with SPI and DMA */
-	while (ssd1306_SPI_WriteDisp(SSD1306_Buffer) != SSD1306_STATE_READY)
-		;
+	return ssd1306_SPI_WriteDisp(SSD1306_Buffer);
 }
 
 /**
@@ -810,8 +813,10 @@ uint8_t ssd1306_SPI_WriteDisp(uint8_t *pTxBuffer)
 		SSD1306_DISP_ACCESS();
 
 		/* DMA enabled send with SPI - callback function run when complete */
-		while (HAL_SPI_Transmit_DMA(&Spi_ssd1306Write, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK)
-			;
+		if (HAL_SPI_Transmit_DMA(&Spi_ssd1306Write, pTxBuffer, (uint16_t)sizeof(SSD1306_Buffer)) != HAL_OK)
+		{
+			SSD1306_Disp.state = SSD1306_SPI_ERROR;
+		}
 	}
 
 	return state;

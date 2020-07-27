@@ -21,6 +21,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "ssd1306.h"
+
 /* Private variables ---------------------------------------------------------*/
 DMA_HandleTypeDef hdma_spi2_tx;
 UART_HandleTypeDef huart2;
@@ -28,7 +30,6 @@ UART_HandleTypeDef huart2;
 /*********************************************************
 ********** Private variables for SSD1306
 *********************************************************/
-#include "ssd1306.h"
 
 SPI_HandleTypeDef Spi_ssd1306Write;
 
@@ -91,8 +92,12 @@ int main(void)
       SSD1306_Puts("World", &Font_7x10, SSD1306_PX_CLR_WHITE);
     }
 
-    /* Update the ssd1306 display in non-blocking mode */
-    SSD1306_UpdateScreen();
+    /* Update the ssd1306 display in non-blocking mode -> should return SSD1306_STATE_READY if successful */
+    if (SSD1306_UpdateScreen() == SSD1306_SPI_ERROR)
+    {
+      /* Program enters here only when HAL_SPI_Transmit_DMA function call fails */
+      Error_Handler();
+    };
 
     xPos++;
     if (xPos == 80)
