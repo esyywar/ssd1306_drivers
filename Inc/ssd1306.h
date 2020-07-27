@@ -210,7 +210,7 @@ extern C
     uint16_t CurrentY;
     uint8_t Inverted;
     uint8_t Initialized;
-    uint8_t state;
+    volatile uint8_t state;
   } SSD1306_t;
 
 /* State macros - set when data from buffer is being loaded */
