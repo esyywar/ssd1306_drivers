@@ -100,6 +100,7 @@ int main(void)
       xPos = 5;
     }
 
+    /* 40 fps (tested up to 200 fps!) */
     HAL_Delay(25);
   }
 }
